@@ -1,44 +1,80 @@
-const fs = require("node:fs");
+const { createWriteStream, createReadStream, write } = require("node:fs");
+const { Transform } = require("node:stream");
+const writeStream = createWriteStream("./consoles.json");
+const readStream = createReadStream("./people.csv", {
+  encoding: "utf-8",
+});
 
-const buffer = [];
-// const writeStream = fs.createWriteStream("./copy.csv");
-fs.createReadStream("./test.csv", { encoding: "utf-8" })
-  .on("data", (chunk) => {
-    buffer.push(chunk);
-    // writeStream.write(chunk);
-  })
-  .on("error", (err) => {
-    console.log("There has been an error", err);
-  })
-  .on("end", () => {
-    console.log("Done");
-    const data = buffer[0].split(",,,\r\n").filter((dataString) => {
-      // Filter to remove any empty strings.
-      return dataString.length;
-    });
+const convertToJson = (() => {
+  let isFirstRead = true;
+  let isFirstWrite = true;
+  let isListeningForEndOfReadStream = false;
+  let headers;
 
-    // CSV headers are the first item in the data array.
-    const csvHeaderNames = data.shift().split(",");
+  const convert = new Transform({
+    transform(data, encoding, callback) {
+      // Listen for the emitter to emit "end". This is when the last json
+      // bracket (]) is written to the file, thus completing the JSON file.
+      if (!isListeningForEndOfReadStream) {
+        isListeningForEndOfReadStream = true;
+        readStream.on("end", () => {
+          writeStream.write("]");
+        });
+      }
 
-    // Reduce the array of strings (CSV rows) into an array of objects, where
-    // the keys are the header names.
-    const documents = data.reduce((acc, currRow, i) => {
-      // Split the string of comma separated values
-      // into an array of individual strings/values.
-      const csvRow = currRow.split(",");
+      // Convert the chunk from Buffer to string so it can be operated on.
+      let chunk = data.toString();
 
-      // Create a single object from the current string (CSV row).
-      const document = csvHeaderNames.reduce(
-        (rowDocument, csvHeaderName, j) => {
-          rowDocument[csvHeaderName] = csvRow[j];
-          return rowDocument;
-        },
-        {}
-      );
+      // If the is the first chunk of data (i.e. the first read) then the first
+      // row of values is the header of the CSV.
+      if (isFirstRead) {
+        const buffer = chunk.split("\r\n");
+        headers = buffer.shift().split(",");
+        headers = headers.map((header) => header.trim());
+        chunk = buffer.join("\r\n");
+        isFirstRead = !isFirstRead;
+        writeStream.write("[");
+      }
 
-      acc.push(document);
-      return acc;
-    }, []);
+      // If this is NOT the first time we are writing to the output file, then
+      // there needs to be a comma inserted after the previously written line.
+      if (!isFirstWrite) {
+        writeStream.write(",");
+      }
 
-    console.log(documents[documents.length - 1]);
+      // Remove empty lines from chunk. This can happen when the last line in
+      // the file is empty
+      chunk = chunk
+        .split("\r\n")
+        .filter((dataString) => {
+          // Filter to remove any empty strings.
+          return dataString.length;
+        })
+        .join("\r\n");
+
+      // transform the chunk into json.
+      const preJsonChunk = [];
+      chunk.split("\r\n").forEach((csvRow) => {
+        const csvRowJson = {};
+        csvRow.split(",").forEach((value, index) => {
+          const key = headers[index];
+          csvRowJson[key] = value.trim();
+        });
+        preJsonChunk.push(csvRowJson);
+      });
+      const jsonChunk = JSON.stringify(preJsonChunk);
+
+      if (isFirstWrite) {
+        isFirstWrite = false;
+      }
+
+      // Only write the objects to the file and not the array containing the
+      // objects. So, from this [{...},{...}] to this {...},{...}
+      callback(null, jsonChunk.substring(1, jsonChunk.length - 1));
+    },
   });
+
+  return convert;
+})();
+
+readStream.pipe(convertToJson).pipe(writeStream);
