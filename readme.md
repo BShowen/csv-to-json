@@ -33,7 +33,8 @@ const toJson = transform({
 read.pipe(toJson).pipe(write);
 ```
 
-Now you will have a new file with valid JSON representation of your CSV data.
+Now you will have a new file with a valid JSON array. Each item in the array  
+representing a single row of your CSV data.
 
 ## How it works.
 
