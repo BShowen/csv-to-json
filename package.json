@@ -1,0 +1,9 @@
+{
+  "name": "csv-to-json",
+  "version": "1.0.0",
+  "description": "Parse small and large CSV files into JSON files",
+  "main": "testCsvFileRead.js",
+  "scripts": {},
+  "author": "Bradley Showen",
+  "license": "ISC"
+}
