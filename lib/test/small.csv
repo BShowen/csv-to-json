@@ -1,4 +1,4 @@
-name ,price ,description,stock,manufacturer,man Date
+name,price,description,stock,manufacturer,man Date
 Test console A,100.00,console a,1,Man A,8-8-92
 Test console B,200.00,console b,2,Man B,8-9-92
 Test console A,100.00,console a,1,Man A,8-10-92
