@@ -16,7 +16,7 @@ I/O streams.
 
 ```js
 // First, import this package.
-const { csvToJson } = require("./lib/main.js");
+const { csvToJson } = require("@bshowen/csv-to-json");
 // csvToJson requires the following two options.
 const options = {
   inputFilePath: "path/to/your/csv/data.csv",
