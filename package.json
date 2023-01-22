@@ -1,9 +1,11 @@
 {
   "name": "@bshowen/csv-to-json",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Parse small and large CSV files into JSON files",
   "main": "testCsvFileRead.js",
-  "scripts": {},
+  "scripts": {
+    "publish-package": "npm publish --access public"
+  },
   "author": "Bradley Showen",
   "license": "MIT",
   "repository": {
