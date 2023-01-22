@@ -5,7 +5,17 @@
   "main": "testCsvFileRead.js",
   "scripts": {},
   "author": "Bradley Showen",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BShowen/csv-to-json"
+  },
+  "keywords": [
+    "csv",
+    "csv to json",
+    "json",
+    "json object"
+  ],
   "devDependencies": {
     "@faker-js/faker": "^7.6.0"
   }
