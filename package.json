@@ -4,7 +4,8 @@
   "description": "Parse small and large CSV files into JSON files",
   "main": "index.js",
   "scripts": {
-    "publish-package": "npm publish --access public"
+    "publish-package": "npm publish --access public",
+    "test": "jest --watch"
   },
   "author": "Bradley Showen",
   "license": "MIT",
@@ -12,10 +13,18 @@
     "type": "git",
     "url": "https://github.com/BShowen/csv-to-json"
   },
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "tmp"
+    ]
+  },
   "keywords": [
     "csv",
     "csv to json",
     "json",
     "json object"
-  ]
+  ],
+  "devDependencies": {
+    "jest": "^29.4.0"
+  }
 }
