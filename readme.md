@@ -1,4 +1,4 @@
-# csv-to-json
+# **csv-to-json**
 
 - Transforms a .csv file into a .json file
 - The header values in the CSV are used as the JSON object keys.
@@ -25,7 +25,7 @@ const options = {
 
 // You can use .catch to catch any errors or use a try/catch block.
 csvToJson(options)
-  .catch((err) => console.log(err))
+  .catch((err) => console.log(err.message))
   .then(() => {
     // Hurray, no errors. Do some other stuff here...
   });
@@ -44,6 +44,33 @@ run();
 
 Now you will have a new file with a valid JSON array. Each item in the array  
 representing a single row of your CSV data.
+
+## Options
+
+csvToJson accepts the following options in the form of an object.
+
+|     Option     | Required |  Type  |                             Example                             |
+| :------------: | :------: | :----: | :-------------------------------------------------------------: |
+| inputFilePath  |   Yes    | String |   `{ inputFilePath: path.resolve(__dirname, "myFile.csv") }`    |
+| outputFilePath |   Yes    | String | `{ outputFilePath: path.resolve(__dirname, "./outputFolder") }` |
+| outputFileName |    No    | String |             `{ outputFileName: "myFileName.json" }`             |
+
+**An example using all options.**
+
+```js
+const { csvToJson } = require("@bshowen/csv-to-json");
+const path = require("node:path");
+
+csvToJson({
+  inputFilePath: path.resolve(__dirname, "../myFiles/weatherData.csv"),
+  outputFilePath: path.resolve(__dirname, "../formattedFiles"),
+  outputFileName: "weatherData.json",
+})
+  .catch((err) => console.log(err.message))
+  .then(() => {
+    // Hurray, no errors. Do some other stuff here...
+  });
+```
 
 ## How it works.
 
