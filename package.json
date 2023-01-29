@@ -1,6 +1,6 @@
 {
   "name": "@bshowen/csv-to-json",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Parse small and large CSV files into JSON files",
   "main": "index.js",
   "scripts": {
